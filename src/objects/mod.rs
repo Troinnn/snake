@@ -138,6 +138,7 @@ pub struct App {
     pub field: Field,
     pub snake: Snake,
     pub apple: Apple,
+    pub scores: u32,
 }
 
 impl App {
@@ -157,6 +158,7 @@ impl App {
         if self.apple.x_pos == self.snake.body.front().expect("Косяк").clone().0 && self.apple.y_pos == self.snake.body.front().expect("Косяк").clone().1 {
             self.apple.reroll(self.field.scalar);
             self.snake.body.push_back((self.apple.x_pos, self.apple.y_pos));
+            self.add_score();
         }
 
         let mut squares: VecDeque<(i32, i32)> = VecDeque::new();
@@ -170,9 +172,20 @@ impl App {
                 self.snake.body.clear();
                 self.snake = Snake::new();
                 self.apple = Apple::new(self.field.scalar);
+                self.reset_scores();
             }
         }
 
+    }
+
+    fn add_score(&mut self) {
+        self.scores += 1;
+        println!("Очков: {}", self.scores);
+    }
+
+    fn reset_scores(&mut self) {
+        self.scores = 0;
+        println!("Азаза проиграл. Очки сброшены!");
     }
 }
 

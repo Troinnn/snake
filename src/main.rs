@@ -31,6 +31,7 @@ fn main() {
         field: Field::new(height),
         snake: Snake::new(),
         apple: Apple::new(height),
+        scores: 0,
     };
 
     let mut events = Events::new(EventSettings::new()).ups(8);
