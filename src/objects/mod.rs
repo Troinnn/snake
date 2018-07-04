@@ -143,9 +143,9 @@ pub struct App {
 impl App {
     pub fn render(&mut self, arg: &RenderArgs) {
         use graphics;
-        let blue: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
+        let black: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
         self.gl.draw(arg.viewport(), |_c, gl| {
-            graphics::clear(blue, gl);
+            graphics::clear(black, gl);
         });
 
         self.field.render(&mut self.gl, arg);
