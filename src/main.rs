@@ -2,10 +2,11 @@ extern crate piston;
 extern crate graphics;
 extern crate glutin_window;
 extern crate opengl_graphics;
+extern crate rand;
 
 mod objects;
 
-use objects::{Snake, Field, App, Direction};
+use objects::{Snake, Field, App, Direction, Apple};
 use opengl_graphics::OpenGL;
 use glutin_window::GlutinWindow;
 use opengl_graphics::GlGraphics;
@@ -16,9 +17,9 @@ use piston::input::*;
 
 fn main() {
     let opengl: OpenGL = OpenGL::V2_1;
-    let width: u32 = 800;
-    let height: u32 = 600;
-    let mut window: GlutinWindow = WindowSettings::new("SG", [width, height])
+    let width: i32 = 800;
+    let height: i32 = 600;
+    let mut window: GlutinWindow = WindowSettings::new("SG", [width as u32, height as u32])
         .opengl(opengl)
         .srgb(false)
         .exit_on_esc(true)
@@ -29,6 +30,7 @@ fn main() {
         gl: GlGraphics::new(opengl),
         field: Field::new(height),
         snake: Snake::new(),
+        apple: Apple::new(height),
     };
 
     let mut events = Events::new(EventSettings::new()).ups(8);
@@ -37,7 +39,8 @@ fn main() {
             app.render(&r);
         }
         if let Some(_u) = e.update_args() {
-            app.snake.step_move();
+            app.snake.step_move(app.field.scalar);
+            app.check_coll();
         }
         if let Some(Button::Keyboard(key)) = e.press_args() {
             match key {
