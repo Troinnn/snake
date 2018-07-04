@@ -24,8 +24,8 @@ impl Snake {
     pub fn new() -> Snake {
         let mut body: LinkedList<(i32, i32)> = LinkedList::new();
         body.push_front((2, 0));
-        body.push_front((1, 0));
-        body.push_front((0, 0));
+        body.push_back((1, 0));
+        body.push_back((0, 0));
         Snake {
             body,
             direct: (Direction::Right),
@@ -158,6 +158,21 @@ impl App {
             self.apple.reroll(self.field.scalar);
             self.snake.body.push_back((self.apple.x_pos, self.apple.y_pos));
         }
+
+        let mut squares: VecDeque<(i32, i32)> = VecDeque::new();
+
+        for rect in self.snake.body.iter() {
+            squares.push_back(*rect);
+        }
+        squares.pop_front().expect("Нет первого элемента!");
+        for square in squares {
+            if self.snake.body.front().expect("Косяк").clone().0 == square.0 && self.snake.body.front().expect("Косяк").clone().1 == square.1 {
+                self.snake.body.clear();
+                self.snake = Snake::new();
+                self.apple = Apple::new(self.field.scalar);
+            }
+        }
+
     }
 }
 
