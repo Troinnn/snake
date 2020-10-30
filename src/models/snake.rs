@@ -1,8 +1,6 @@
-use std::collections::LinkedList;
-
-use piston::input::*;
+use std::collections::{LinkedList, vec_deque::VecDeque};
 use opengl_graphics::GlGraphics;
-use std::collections::vec_deque::VecDeque;
+use piston::input::*;
 use rand;
 use rand::Rng;
 
@@ -16,8 +14,8 @@ pub enum Direction {
 
 #[derive(Debug)]
 pub struct Snake {
-    body: LinkedList<(i32, i32)>,
-    direct: Direction,
+    pub body: LinkedList<(i32, i32)>,
+    pub direct: Direction,
 }
 
 impl Snake {
@@ -52,7 +50,6 @@ impl Snake {
     }
 
     pub fn step_move(&mut self, scalar: i32) {
-
         let head = self.body.front().expect("Нет тела, нет дела!").clone();
         match self.direct {
             Direction::Left => {
@@ -95,7 +92,9 @@ impl Snake {
         let mut squares: VecDeque<graphics::types::Rectangle> = VecDeque::new();
 
         for rect in self.body.iter() {
-            let mut tt: graphics::types::Rectangle = graphics::rectangle::square((rect.0 * 20) as f64, (rect.1 * 20) as f64, 20_f64);
+            let mut tt: graphics::types::Rectangle = graphics::rectangle::square((rect.0 * 20) as f64,
+                                                                                 (rect.1 * 20) as f64,
+                                                                                 20_f64);
             squares.push_back(tt);
         }
 
@@ -110,88 +109,9 @@ impl Snake {
     }
 }
 
-pub struct Field {
-    pub scalar: i32,
-}
-
-impl Field {
-    pub fn new(scalar: i32) -> Field {
-        Field {
-            scalar
-        }
-    }
-
-    pub fn render(&self, gl: &mut GlGraphics, arg: &RenderArgs) {
-        use graphics;
-        let dark_blue: [f32; 4] = [0.0, 0.0, 0.3, 1.0];
-        let field: [f64; 4] = graphics::rectangle::square(0 as f64, 0 as f64, self.scalar as f64);
-
-        gl.draw(arg.viewport(), |c, gl| {
-            let transform = c.transform;
-            graphics::rectangle(dark_blue, field, transform, gl);
-        });
-    }
-}
-
-pub struct App {
-    pub gl: GlGraphics,
-    pub field: Field,
-    pub snake: Snake,
-    pub apple: Apple,
-    pub scores: u32,
-}
-
-impl App {
-    pub fn render(&mut self, arg: &RenderArgs) {
-        use graphics;
-        let black: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
-        self.gl.draw(arg.viewport(), |_c, gl| {
-            graphics::clear(black, gl);
-        });
-
-        self.field.render(&mut self.gl, arg);
-        self.snake.render(&mut self.gl, arg);
-        self.apple.render(&mut self.gl, arg);
-    }
-
-    pub fn check_coll(&mut self) {
-        if self.apple.x_pos == self.snake.body.front().expect("Косяк").clone().0 && self.apple.y_pos == self.snake.body.front().expect("Косяк").clone().1 {
-            self.apple.reroll(self.field.scalar);
-            self.snake.body.push_back((self.apple.x_pos, self.apple.y_pos));
-            self.add_score();
-        }
-
-        let mut squares: VecDeque<(i32, i32)> = VecDeque::new();
-
-        for rect in self.snake.body.iter() {
-            squares.push_back(*rect);
-        }
-        squares.pop_front().expect("Нет первого элемента!");
-        for square in squares {
-            if self.snake.body.front().expect("Косяк").clone().0 == square.0 && self.snake.body.front().expect("Косяк").clone().1 == square.1 {
-                self.snake.body.clear();
-                self.snake = Snake::new();
-                self.apple = Apple::new(self.field.scalar);
-                self.reset_scores();
-            }
-        }
-
-    }
-
-    fn add_score(&mut self) {
-        self.scores += 1;
-        println!("Очков: {}", self.scores);
-    }
-
-    fn reset_scores(&mut self) {
-        self.scores = 0;
-        println!("Азаза проиграл. Очки сброшены!");
-    }
-}
-
 pub struct Apple {
-    x_pos: i32,
-    y_pos: i32,
+    pub x_pos: i32,
+    pub y_pos: i32,
 }
 
 impl Apple {
