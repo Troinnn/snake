@@ -180,6 +180,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3be565ca5c557d7f59e7cfcf1844f9e3033650c929c6566f511e8005f205c1d0"
 
 [[package]]
+name = "find_folder"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9f6d018fb95a0b59f854aed68ecd96ce2b80af7911b92b1fed3c4b1fa516b91b"
+
+[[package]]
 name = "fnv"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -199,6 +205,12 @@ name = "foreign-types-shared"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00b0228411908ca8685dba7fc2cdd70ec9990a6e753e89b6ac91a84c40fbaf4b"
+
+[[package]]
+name = "fps_counter"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e87181dcb1c9f3297845af26d5d78c4936ff12f8abe1c2a5507459d45f5236a6"
 
 [[package]]
 name = "fuchsia-zircon"
@@ -811,6 +823,8 @@ dependencies = [
 name = "test_project"
 version = "0.1.0"
 dependencies = [
+ "find_folder",
+ "fps_counter",
  "piston",
  "piston2d-graphics",
  "piston2d-opengl_graphics",

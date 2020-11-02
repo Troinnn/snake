@@ -49,7 +49,30 @@ impl Snake {
         }
     }
 
-    pub fn step_move(&mut self, scalar: i32) {
+    pub fn render(&self, gl: &mut GlGraphics, arg: &RenderArgs) {
+        let half_green: [f32; 4] = [0.0, 0.5, 0.0, 1.0];
+        let green: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+
+        let mut squares: VecDeque<graphics::types::Rectangle> = VecDeque::new();
+
+        for rect in self.body.iter() {
+            let tt: graphics::types::Rectangle = graphics::rectangle::square((rect.0 * 20) as f64,
+                                                                             (rect.1 * 20) as f64,
+                                                                             20_f64);
+            squares.push_back(tt);
+        }
+
+        gl.draw(arg.viewport(), |c, gl| {
+            let transform = c.transform;
+            let head = squares.pop_front().expect("Змейка пустая");
+            graphics::rectangle(green, head, transform, gl);
+            for square in squares {
+                graphics::rectangle(half_green, square, transform, gl);
+            }
+        });
+    }
+
+    pub fn update(&mut self, scalar: i32, (_w, h): (f64, f64), fps: usize) {
         let head = self.body.front().expect("Нет тела, нет дела!").clone();
         match self.direct {
             Direction::Left => {
@@ -83,30 +106,6 @@ impl Snake {
         }
         self.body.pop_back();
     }
-
-    pub fn render(&self, gl: &mut GlGraphics, arg: &RenderArgs) {
-        use graphics;
-        let half_green: [f32; 4] = [0.0, 0.5, 0.0, 1.0];
-        let green: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
-
-        let mut squares: VecDeque<graphics::types::Rectangle> = VecDeque::new();
-
-        for rect in self.body.iter() {
-            let mut tt: graphics::types::Rectangle = graphics::rectangle::square((rect.0 * 20) as f64,
-                                                                                 (rect.1 * 20) as f64,
-                                                                                 20_f64);
-            squares.push_back(tt);
-        }
-
-        gl.draw(arg.viewport(), |c, gl| {
-            let transform = c.transform;
-            let head = squares.pop_front().expect("Змейка пустая");
-            graphics::rectangle(green, head, transform, gl);
-            for square in squares {
-                graphics::rectangle(half_green, square, transform, gl);
-            }
-        });
-    }
 }
 
 pub struct Apple {
@@ -130,7 +129,6 @@ impl Apple {
     }
 
     pub fn render(&self, gl: &mut GlGraphics, arg: &RenderArgs) {
-        use graphics;
         let red: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
         let field: [f64; 4] = graphics::rectangle::square((self.x_pos * 20) as f64, (self.y_pos * 20) as f64, 20_f64);
 
